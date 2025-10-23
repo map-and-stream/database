@@ -1,6 +1,6 @@
 // Implementation
 
-#include "PostgreSQL.h"
+#include "postgresql.h"
 
 #include <iostream>
 #include <pqxx/pqxx>
