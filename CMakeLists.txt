@@ -6,5 +6,5 @@ set(LIB_ALIAS isiran::database)
 
 # Build the example
 add_subdirectory(src)
-# add_subdirectory(example)
+add_subdirectory(example)
 # add_subdirectory(test)

@@ -1,10 +1,11 @@
 set(LIBRARY_NAME database)
 
 set(DATABASE_SOURCES
-
+postgresql.cpp
 )
 
 set(DATABASE_HEADERS
+postgresql.h
 factory.h
 )
 
