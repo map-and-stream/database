@@ -38,3 +38,44 @@ pqxx::connection* PostgreSQL::get() {
 PostgreSQL::~PostgreSQL() {
     close();
 }
+
+bool PostgreSQL::insert(const std::string& query, const std::vector<std::string>& values) {
+try {
+    pqxx::work txn(*connection_.get());
+
+    // Execute the query with parameters
+    pqxx::result res = txn.exec_params(query, pqxx::prepare::make_dynamic_params(values.begin(), values.end()));
+
+    txn.commit();
+    return true;
+} catch (const std::exception& e) {
+    std::cerr << "Insert failed: " << e.what() << std::endl;
+    return false;
+}
+}
+
+pqxx::result PostgreSQL::select(
+    const std::string& query, 
+    const std::vector<std::string>& params
+) {
+    try {
+        pqxx::work txn(*connection_.get());
+
+        // Execute the query with parameters
+        pqxx::result res;
+        if (params.empty()) {
+            res = txn.exec(query);
+        } else {
+            res = txn.exec_params(
+                query,
+                pqxx::prepare::make_dynamic_params(params.begin(), params.end())
+            );
+        }
+
+        txn.commit();
+        return res;
+    } catch (const std::exception& e) {
+        std::cerr << "SELECT failed: " << e.what() << std::endl;
+        return pqxx::result{}; // empty result on failure
+    }
+}
