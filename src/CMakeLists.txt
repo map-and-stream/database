@@ -7,6 +7,7 @@ postgresql.cpp
 set(DATABASE_HEADERS
 postgresql.h
 factory.h
+config.h
 )
 
 add_subdirectory(driver/postgres/libpqxx)

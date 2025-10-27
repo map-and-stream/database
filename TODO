@@ -1,0 +1,5 @@
+1. query builder as third party (submodule) and add wrapper like json
+2. use module log in db and dependency injection to database class
+3. change psql::result to custom class in order support other database
+4. add pooling mechanism in config file
+

@@ -1,6 +1,8 @@
 #include <memory>
 #include <pqxx/pqxx>  // This includes the full definition of pqxx::connection
 #include <string>
+#include <vector>
+#include <iostream>
 
 class PostgreSQL {
   public:
@@ -10,6 +12,17 @@ class PostgreSQL {
     void close();
     bool is_open() const;
     pqxx::connection* get();
+
+    bool insert(const std::string& query, const std::vector<std::string>& values);
+    pqxx::result select(const std::string& query, const std::vector<std::string>& params = {} );
+    void printResult(const pqxx::result& res) {
+      for (const auto& row : res) {
+          for (const auto& field : row) {
+              std::cout << field.c_str() << "\t";  // print column value
+          }
+          std::cout << "\n";
+      }
+  }
 
     // Non-copyable
     PostgreSQL(const PostgreSQL&) = delete;
