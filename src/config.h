@@ -13,9 +13,11 @@ struct ConnectionConfig {
 
     std::string toPostgresConnection() const {
         // postgresql://postgres:qazwsx@172.21.144.1:5432/mydb?connect_timeout=2
-        // return "postgresql://" + user + ":" + password + "@" + host + ":" + std::to_string(port) +
+        // return "postgresql://" + user + ":" + password + "@" + host + ":" + std::to_string(port)
+        // +
         //        "/" + dbname + "?" + "connect_timeout=" + std::to_string(connect_timeout);
-               return "host=" + host +" port=" + std::to_string(port) + " dbname=" + dbname + " user=" + user + 
-               " password=" + password + " connect_timeout=" + std::to_string(connect_timeout);
+        return "host=" + host + " port=" + std::to_string(port) + " dbname=" + dbname +
+               " user=" + user + " password=" + password +
+               " connect_timeout=" + std::to_string(connect_timeout);
     }
 };
