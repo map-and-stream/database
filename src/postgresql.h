@@ -1,20 +1,23 @@
+#pragma once
+
 #include <iostream>
 #include <memory>
 #include <pqxx/pqxx>  // This includes the full definition of pqxx::connection
 #include <string>
 #include <vector>
+#include "database.h"
 
-class PostgreSQL {
+class PostgreSQL :public IDatabase{
   public:
-    PostgreSQL(const std::string& conninfo) : connection_(nullptr), conninfo_(conninfo) {}
+    PostgreSQL(ConnectionConfig cfg) : IDatabase(cfg) {}
 
-    bool open();
-    void close();
-    bool is_open() const;
+    bool open() override;
+    void close() override;
+    bool is_open() const override;
     pqxx::connection* get();
 
-    bool insert(const std::string& query, const std::vector<std::string>& values);
-    pqxx::result select(const std::string& query, const std::vector<std::string>& params = {});
+    bool insert(const std::string& query, const std::vector<std::string>& values) override;
+    QueryResult select(const std::string& query, const std::vector<std::string>& params = {}) override;
     void printResult(const pqxx::result& res) {
         for (const auto& row : res) {
             for (const auto& field : row) {
@@ -23,8 +26,8 @@ class PostgreSQL {
             std::cout << "\n";
         }
     }
-    bool update(const std::string& query, const std::vector<std::string>& params);
-    bool remove(const std::string& query, const std::vector<std::string>& params);
+    bool update(const std::string& query, const std::vector<std::string>& params) override;
+    bool remove(const std::string& query, const std::vector<std::string>& params) override;
 
     // Non-copyable
     PostgreSQL(const PostgreSQL&) = delete;

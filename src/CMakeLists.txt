@@ -8,6 +8,7 @@ set(DATABASE_HEADERS
 postgresql.h
 factory.h
 config.h
+database.h
 )
 
 add_subdirectory(driver/postgres/libpqxx)
