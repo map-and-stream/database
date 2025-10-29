@@ -9,7 +9,7 @@ bool PostgreSQL::open() {
         return true;  // Already open
     }
     try {
-        connection_ = std::make_unique<pqxx::connection>(conninfo_);
+        connection_ = std::make_unique<pqxx::connection>(config.toPostgresConnection());
         return connection_->is_open();
     } catch (const std::exception& e) {
         std::cerr << "⚠ Other error: " << e.what() << "\n";
@@ -27,10 +27,6 @@ void PostgreSQL::close() {
 
 bool PostgreSQL::is_open() const {
     return connection_ && connection_->is_open();
-}
-
-pqxx::connection* PostgreSQL::get() {
-    return connection_.get();
 }
 
 PostgreSQL::~PostgreSQL() {

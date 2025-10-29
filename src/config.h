@@ -10,6 +10,7 @@ struct ConnectionConfig {
     std::string user;
     std::string password;
     int connect_timeout = 10;  // seconds
+    std::string path = "mydb.db";
 
     std::string toPostgresConnection() const {
         // postgresql://postgres:qazwsx@172.21.144.1:5432/mydb?connect_timeout=2
