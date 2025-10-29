@@ -9,7 +9,7 @@ bool PostgreSQL::open() {
         return true;  // Already open
     }
     try {
-        connection_ = std::make_unique<pqxx::connection>(conninfo_);
+        connection_ = std::make_unique<pqxx::connection>(config.toPostgresConnection());
         return connection_->is_open();
     } catch (const std::exception& e) {
         std::cerr << "⚠ Other error: " << e.what() << "\n";
@@ -27,10 +27,6 @@ void PostgreSQL::close() {
 
 bool PostgreSQL::is_open() const {
     return connection_ && connection_->is_open();
-}
-
-pqxx::connection* PostgreSQL::get() {
-    return connection_.get();
 }
 
 PostgreSQL::~PostgreSQL() {
@@ -58,7 +54,48 @@ bool PostgreSQL::insert(const std::string& query, const std::vector<std::string>
     }
 }
 
-pqxx::result PostgreSQL::select(const std::string& query, const std::vector<std::string>& params) {
+QueryResult convert_result(const pqxx::result& res) {
+    if (res.empty()) {
+        // Return empty result with column names (if available)
+        std::vector<std::string> columns;
+        if (res.columns() > 0) {
+            columns.reserve(res.columns());
+            for (pqxx::row_size_type i = 0; i < res.columns(); ++i) {
+                columns.push_back(std::string(res.column_name(i)));
+            }
+        }
+        return QueryResult({}, std::move(columns));
+    }
+
+            // Extract column names
+    std::vector<std::string> columns;
+    columns.reserve(res.columns());
+    for (pqxx::row_size_type i = 0; i < res.columns(); ++i) {
+        columns.push_back(std::string(res.column_name(i)));
+    }
+
+            // Extract rows
+    QueryResult::Table table;
+    table.reserve(res.size());
+
+    for (const auto& row : res) {
+        QueryResult::Row r;
+        r.reserve(row.size());
+        for (const auto& field : row) {
+            // Convert field to string; handle NULLs safely
+            if (field.is_null()) {
+                r.emplace_back("NULL"); // or use empty string "" based on your policy
+            } else {
+                r.emplace_back(std::string(field.c_str()));
+            }
+        }
+        table.push_back(std::move(r));
+    }
+
+    return QueryResult(std::move(table), std::move(columns));
+}
+
+QueryResult PostgreSQL::select(const std::string& query, const std::vector<std::string>& params) {
     try {
         pqxx::work txn(*connection_.get());
 
@@ -72,10 +109,10 @@ pqxx::result PostgreSQL::select(const std::string& query, const std::vector<std:
         }
 
         txn.commit();
-        return res;
+        return convert_result(res);
     } catch (const std::exception& e) {
         std::cerr << "SELECT failed: " << e.what() << std::endl;
-        return pqxx::result{};  // empty result on failure
+        return convert_result(pqxx::result{});  // empty result on failure
     }
 }
 
