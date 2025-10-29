@@ -34,45 +34,34 @@ bool SQLite::is_open() const {
     return db_ != nullptr;
 }
 
-bool SQLite::insert(const std::string& query, const std::vector<std::string>& values) {
-    return executeQuery(query, values, false);
+bool SQLite::insert(const QueryBuilder& qb) {
+    return executeQuery(qb, false);
 }
 
-QueryResult SQLite::select(const std::string& query, const std::vector<std::string>& params) {
+QueryResult SQLite::select(const QueryBuilder& qb) {
     QueryResult result;
-    executeQuery(query, params, true, &result);
+    executeQuery(qb, true, &result);
     return result;
 }
 
-bool SQLite::update(const std::string& query, const std::vector<std::string>& params) {
-    return executeQuery(query, params, false);
+bool SQLite::update(const QueryBuilder& qb) {
+    return executeQuery(qb, false);
 }
 
-bool SQLite::remove(const std::string& query, const std::vector<std::string>& params) {
-    return executeQuery(query, params, false);
+bool SQLite::remove(const QueryBuilder& qb) {
+    return executeQuery(qb, false);
 }
 
-bool SQLite::executeQuery(const std::string& query, const std::vector<std::string>& params,
-                          bool returnsData, QueryResult* result) {
+bool SQLite::executeQuery(const QueryBuilder& qb, bool returnsData, QueryResult* result) {
     if (!is_open() && !open()) {
         return false;
     }
 
     sqlite3_stmt* stmt = nullptr;
-    int rc = sqlite3_prepare_v2(db_, query.c_str(), -1, &stmt, nullptr);
+    int rc = sqlite3_prepare_v2(db_, qb.str().c_str(), -1, &stmt, nullptr);
     if (rc != SQLITE_OK) {
         std::cerr << "SQL error (prepare): " << sqlite3_errmsg(db_) << std::endl;
         return false;
-    }
-
-    // Bind parameters
-    for (size_t i = 0; i < params.size(); ++i) {
-        rc = sqlite3_bind_text(stmt, static_cast<int>(i + 1), params[i].c_str(), -1, SQLITE_STATIC);
-        if (rc != SQLITE_OK) {
-            std::cerr << "SQL error (bind): " << sqlite3_errmsg(db_) << std::endl;
-            sqlite3_finalize(stmt);
-            return false;
-        }
     }
 
     if (returnsData) {

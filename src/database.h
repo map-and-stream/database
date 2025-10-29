@@ -7,6 +7,7 @@
 
 #include "config.h"
 #include "query_result.h"
+#include "querybuilder/query_builder.h"
 
 enum class DatabaseType { PostgreSQL, sqlite };
 
@@ -19,11 +20,10 @@ class IDatabase {
     virtual void close() = 0;
     virtual bool is_open() const = 0;
 
-    virtual bool insert(const std::string& query, const std::vector<std::string>& values = {}) = 0;
-    virtual bool update(const std::string& query, const std::vector<std::string>& params = {}) = 0;
-    virtual bool remove(const std::string& query, const std::vector<std::string>& params = {}) = 0;
-    virtual QueryResult select(const std::string& query,
-                               const std::vector<std::string>& params = {}) = 0;
+    virtual bool insert(const QueryBuilder& qb) = 0;
+    virtual bool update(const QueryBuilder& qb) = 0;
+    virtual bool remove(const QueryBuilder& qb) = 0;
+    virtual QueryResult select(const QueryBuilder& qb) = 0;
 
   protected:
     ConnectionConfig config;

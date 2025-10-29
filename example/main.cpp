@@ -29,7 +29,7 @@ int main() {
                           .str();
 
     std::cout << "query of querybuilder :" << sql << "\n";
-    pg->select(sql).print();
+    pg->select(q).print();
 
     // refacot paramter table, parameter query, parameter value
     // create test table

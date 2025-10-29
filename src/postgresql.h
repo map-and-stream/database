@@ -16,11 +16,10 @@ class PostgreSQL : public IDatabase {
     void close() override;
     bool is_open() const override;
 
-    bool insert(const std::string& query, const std::vector<std::string>& values = {}) override;
-    bool update(const std::string& query, const std::vector<std::string>& params = {}) override;
-    bool remove(const std::string& query, const std::vector<std::string>& params = {}) override;
-    QueryResult select(const std::string& query,
-                       const std::vector<std::string>& params = {}) override;
+    bool insert(const QueryBuilder& qb) override;
+    bool update(const QueryBuilder& qb) override;
+    bool remove(const QueryBuilder& qb) override;
+    QueryResult select(const QueryBuilder& qb) override;
 
     // Non-copyable
     PostgreSQL(const PostgreSQL&) = delete;

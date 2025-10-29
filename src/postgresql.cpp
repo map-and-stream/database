@@ -33,7 +33,7 @@ PostgreSQL::~PostgreSQL() {
     close();
 }
 
-bool PostgreSQL::insert(const std::string& query, const std::vector<std::string>& values) {
+bool PostgreSQL::insert(const QueryBuilder& qb) {
     if (!is_open()) {
         std::cerr << "❌ Cannot insert: database not open.\n";
         return false;
@@ -43,8 +43,7 @@ bool PostgreSQL::insert(const std::string& query, const std::vector<std::string>
         pqxx::work txn(*connection_.get());
 
         // Execute the query with parameters
-        pqxx::result res = txn.exec_params(
-            query, pqxx::prepare::make_dynamic_params(values.begin(), values.end()));
+        pqxx::result res = txn.exec_params(qb.str());
 
         txn.commit();
         return true;
@@ -95,18 +94,13 @@ QueryResult convert_result(const pqxx::result& res) {
     return QueryResult(std::move(table), std::move(columns));
 }
 
-QueryResult PostgreSQL::select(const std::string& query, const std::vector<std::string>& params) {
+QueryResult PostgreSQL::select(const QueryBuilder& qb) {
     try {
         pqxx::work txn(*connection_.get());
 
         // Execute the query with parameters
         pqxx::result res;
-        if (params.empty()) {
-            res = txn.exec(query);
-        } else {
-            res = txn.exec_params(query,
-                                  pqxx::prepare::make_dynamic_params(params.begin(), params.end()));
-        }
+        res = txn.exec(qb.str());
 
         txn.commit();
         return convert_result(res);
@@ -116,7 +110,7 @@ QueryResult PostgreSQL::select(const std::string& query, const std::vector<std::
     }
 }
 
-bool PostgreSQL::update(const std::string& query, const std::vector<std::string>& params) {
+bool PostgreSQL::update(const QueryBuilder& qb) {
     if (!is_open()) {
         std::cerr << "❌ Cannot update: database not open.\n";
         return false;
@@ -124,10 +118,7 @@ bool PostgreSQL::update(const std::string& query, const std::vector<std::string>
 
     try {
         pqxx::work txn(*connection_.get());
-        if (params.empty())
-            txn.exec(query);
-        else
-            txn.exec_params(query, pqxx::prepare::make_dynamic_params(params));
+        txn.exec(qb.str());
         txn.commit();
         std::cout << "✅ Update successful.\n";
         return true;
@@ -137,7 +128,7 @@ bool PostgreSQL::update(const std::string& query, const std::vector<std::string>
     }
 }
 
-bool PostgreSQL::remove(const std::string& query, const std::vector<std::string>& params) {
+bool PostgreSQL::remove(const QueryBuilder& qb) {
     if (!is_open()) {
         std::cerr << "❌ Cannot delete: database not open.\n";
         return false;
@@ -145,10 +136,9 @@ bool PostgreSQL::remove(const std::string& query, const std::vector<std::string>
 
     try {
         pqxx::work txn(*connection_.get());
-        if (params.empty())
-            txn.exec(query);
-        else
-            txn.exec_params(query, pqxx::prepare::make_dynamic_params(params));
+
+        txn.exec(qb.str());
+        
         txn.commit();
         std::cout << "🗑️  Delete successful.\n";
         return true;
