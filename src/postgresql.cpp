@@ -9,7 +9,7 @@ bool PostgreSQL::open() {
         return true;  // Already open
     }
     try {
-        connection_ = std::make_unique<pqxx::connection>(config.toPostgresConnection());
+        connection_ = std::make_unique<pqxx::connection>(config_.toPostgresConnection());
         return connection_->is_open();
     } catch (const std::exception& e) {
         std::cerr << "⚠ Other error: " << e.what() << "\n";
@@ -138,7 +138,7 @@ bool PostgreSQL::remove(const QueryBuilder& qb) {
         pqxx::work txn(*connection_.get());
 
         txn.exec(qb.str());
-        
+
         txn.commit();
         std::cout << "🗑️  Delete successful.\n";
         return true;

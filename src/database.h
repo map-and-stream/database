@@ -14,7 +14,7 @@ enum class DatabaseType { PostgreSQL, sqlite };
 class IDatabase {
   public:
     virtual ~IDatabase() = default;
-    IDatabase(ConnectionConfig cfg) : config(cfg) {}
+    IDatabase(ConnectionConfig cfg) : config_(cfg) {}
 
     virtual bool open() = 0;
     virtual void close() = 0;
@@ -26,5 +26,5 @@ class IDatabase {
     virtual QueryResult select(const QueryBuilder& qb) = 0;
 
   protected:
-    ConnectionConfig config;
+    ConnectionConfig config_;
 };

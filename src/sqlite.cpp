@@ -14,7 +14,7 @@ bool SQLite::open() {
         return true;
 
     // config.path should contain the SQLite DB file path
-    int rc = sqlite3_open(config.path.c_str(), &db_);
+    int rc = sqlite3_open(config_.path.c_str(), &db_);
     if (rc != SQLITE_OK) {
         std::cerr << "Cannot open SQLite database: " << sqlite3_errmsg(db_) << std::endl;
         close();
