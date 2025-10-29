@@ -5,9 +5,10 @@
 #include <pqxx/pqxx>
 #include <string>
 #include <vector>
+
 #include "database.h"
 
-class PostgreSQL :public IDatabase{
+class PostgreSQL : public IDatabase {
   public:
     PostgreSQL(ConnectionConfig cfg) : IDatabase(std::move(cfg)) {}
 
@@ -18,7 +19,8 @@ class PostgreSQL :public IDatabase{
     bool insert(const std::string& query, const std::vector<std::string>& values) override;
     bool update(const std::string& query, const std::vector<std::string>& params) override;
     bool remove(const std::string& query, const std::vector<std::string>& params) override;
-    QueryResult select(const std::string& query, const std::vector<std::string>& params = {}) override;
+    QueryResult select(const std::string& query,
+                       const std::vector<std::string>& params = {}) override;
 
     // Non-copyable
     PostgreSQL(const PostgreSQL&) = delete;

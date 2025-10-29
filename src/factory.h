@@ -1,8 +1,8 @@
 #pragma once
 
+#include "config.h"
 #include "postgresql.h"
 #include "sqlite.h"
-#include "config.h"
 
 class DatabaseFactory {
   public:
@@ -11,8 +11,7 @@ class DatabaseFactory {
             return std::make_unique<PostgreSQL>(cfg);
         } else if (type == DatabaseType::sqlite) {
             return std::make_unique<SQLite>(cfg);
-        }
-        else {
+        } else {
             throw std::invalid_argument("Invalid logger type");
         }
     }

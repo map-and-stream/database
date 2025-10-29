@@ -1,10 +1,12 @@
 #pragma once
 
-#include "database.h"
 #include <sqlite3.h>
+
+#include <memory>
 #include <string>
 #include <vector>
-#include <memory>
+
+#include "database.h"
 
 class SQLite : public IDatabase {
   public:
@@ -18,16 +20,18 @@ class SQLite : public IDatabase {
     bool insert(const std::string& query, const std::vector<std::string>& values) override;
     bool update(const std::string& query, const std::vector<std::string>& params) override;
     bool remove(const std::string& query, const std::vector<std::string>& params) override;
-    QueryResult select(const std::string& query, const std::vector<std::string>& params = {}) override;
+    QueryResult select(const std::string& query,
+                       const std::vector<std::string>& params = {}) override;
 
     SQLite(const SQLite&) = delete;
     SQLite& operator=(const SQLite&) = delete;
 
-            // Movable
+    // Movable
     SQLite(SQLite&&) = default;
     SQLite& operator=(SQLite&&) = default;
 
   private:
     sqlite3* db_ = nullptr;
-    bool executeQuery(const std::string& query, const std::vector<std::string>& params, bool returnsData, QueryResult* result = nullptr);
+    bool executeQuery(const std::string& query, const std::vector<std::string>& params,
+                      bool returnsData, QueryResult* result = nullptr);
 };

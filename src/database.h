@@ -1,17 +1,14 @@
 #pragma once
 
+#include <optional>
 #include <pqxx/pqxx>
 #include <string>
 #include <vector>
+
 #include "config.h"
-#include <optional>
 #include "query_result.h"
 
-
-enum class DatabaseType {
-    PostgreSQL,
-    sqlite
-};
+enum class DatabaseType { PostgreSQL, sqlite };
 
 class IDatabase {
   public:
@@ -25,7 +22,9 @@ class IDatabase {
     virtual bool insert(const std::string& query, const std::vector<std::string>& values) = 0;
     virtual bool update(const std::string& query, const std::vector<std::string>& params) = 0;
     virtual bool remove(const std::string& query, const std::vector<std::string>& params) = 0;
-    virtual QueryResult select(const std::string& query, const std::vector<std::string>& params = {}) = 0;
+    virtual QueryResult select(const std::string& query,
+                               const std::vector<std::string>& params = {}) = 0;
+
   protected:
     ConnectionConfig config;
 };

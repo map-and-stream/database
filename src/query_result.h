@@ -18,7 +18,7 @@ class QueryResult {
     const std::vector<std::string>& columns() const { return columns_; }
     const Table& data() const { return table_; }
 
-            // Optional: helper to get cell by (row, col)
+    // Optional: helper to get cell by (row, col)
     std::optional<std::string> at(size_t row, size_t col) const {
         if (row < table_.size() && col < table_[row].size()) {
             return table_[row][col];

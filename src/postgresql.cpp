@@ -67,14 +67,14 @@ QueryResult convert_result(const pqxx::result& res) {
         return QueryResult({}, std::move(columns));
     }
 
-            // Extract column names
+    // Extract column names
     std::vector<std::string> columns;
     columns.reserve(res.columns());
     for (pqxx::row_size_type i = 0; i < res.columns(); ++i) {
         columns.push_back(std::string(res.column_name(i)));
     }
 
-            // Extract rows
+    // Extract rows
     QueryResult::Table table;
     table.reserve(res.size());
 
@@ -84,7 +84,7 @@ QueryResult convert_result(const pqxx::result& res) {
         for (const auto& field : row) {
             // Convert field to string; handle NULLs safely
             if (field.is_null()) {
-                r.emplace_back("NULL"); // or use empty string "" based on your policy
+                r.emplace_back("NULL");  // or use empty string "" based on your policy
             } else {
                 r.emplace_back(std::string(field.c_str()));
             }

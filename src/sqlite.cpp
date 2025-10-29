@@ -1,18 +1,19 @@
 #include "sqlite.h"
+
 #include <iostream>
 #include <stdexcept>
 
-SQLite::SQLite(ConnectionConfig cfg)
-    : IDatabase(std::move(cfg)) {}
+SQLite::SQLite(ConnectionConfig cfg) : IDatabase(std::move(cfg)) {}
 
 SQLite::~SQLite() {
     close();
 }
 
 bool SQLite::open() {
-    if (is_open()) return true;
+    if (is_open())
+        return true;
 
-            // config.path should contain the SQLite DB file path
+    // config.path should contain the SQLite DB file path
     int rc = sqlite3_open(config.path.c_str(), &db_);
     if (rc != SQLITE_OK) {
         std::cerr << "Cannot open SQLite database: " << sqlite3_errmsg(db_) << std::endl;
@@ -51,12 +52,8 @@ bool SQLite::remove(const std::string& query, const std::vector<std::string>& pa
     return executeQuery(query, params, false);
 }
 
-bool SQLite::executeQuery(
-    const std::string& query,
-    const std::vector<std::string>& params,
-    bool returnsData,
-    QueryResult* result
-    ) {
+bool SQLite::executeQuery(const std::string& query, const std::vector<std::string>& params,
+                          bool returnsData, QueryResult* result) {
     if (!is_open() && !open()) {
         return false;
     }
@@ -68,10 +65,9 @@ bool SQLite::executeQuery(
         return false;
     }
 
-            // Bind parameters
+    // Bind parameters
     for (size_t i = 0; i < params.size(); ++i) {
-        rc = sqlite3_bind_text(stmt, static_cast<int>(i + 1),
-                               params[i].c_str(), -1, SQLITE_STATIC);
+        rc = sqlite3_bind_text(stmt, static_cast<int>(i + 1), params[i].c_str(), -1, SQLITE_STATIC);
         if (rc != SQLITE_OK) {
             std::cerr << "SQL error (bind): " << sqlite3_errmsg(db_) << std::endl;
             sqlite3_finalize(stmt);
@@ -88,7 +84,7 @@ bool SQLite::executeQuery(
             columns.emplace_back(name ? name : "");
         }
 
-                // Fetch rows
+        // Fetch rows
         QueryResult::Table table;
         while ((rc = sqlite3_step(stmt)) == SQLITE_ROW) {
             QueryResult::Row row;
