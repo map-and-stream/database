@@ -51,10 +51,7 @@ bool SQLite::remove(const std::string& query, const std::vector<std::string>& pa
     return executeQuery(query, params, false);
 }
 
-bool SQLite::executeQuery(
-    const std::string& query,
-    const std::vector<std::string>& params,
-    bool returnsData,
+bool SQLite::executeQuery(const std::string& query, const std::vector<std::string>& params, bool returnsData,
     QueryResult* result
     ) {
     if (!is_open() && !open()) {

@@ -20,7 +20,8 @@ find_package(Threads REQUIRED)
 
 add_library(${LIBRARY_NAME} STATIC ${DATABASE_SOURCES}
     sqlite.h sqlite.cpp
-    query_result.h)
+    query_result.h
+    query_builder.h query_builder.cpp)
 
 #define public in order we cane use library in test folder
 target_link_libraries(${LIBRARY_NAME} PUBLIC pqxx sqlite3 Threads::Threads)
