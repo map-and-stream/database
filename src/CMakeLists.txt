@@ -2,6 +2,7 @@ set(LIBRARY_NAME database)
 
 set(DATABASE_SOURCES
 postgresql.cpp
+sqlite.cpp
 )
 
 set(DATABASE_HEADERS
@@ -9,6 +10,9 @@ postgresql.h
 factory.h
 config.h
 database.h
+sqlite.h
+query_result.h
+querybuilder/query_builder.h
 )
 
 add_subdirectory(driver/postgres/libpqxx)
@@ -18,9 +22,7 @@ add_subdirectory(sqlite)
 set(THREADS_PREFER_PTHREAD_FLAG ON)
 find_package(Threads REQUIRED)
 
-add_library(${LIBRARY_NAME} STATIC ${DATABASE_SOURCES}
-    sqlite.h sqlite.cpp
-    query_result.h)
+add_library(${LIBRARY_NAME} STATIC ${DATABASE_SOURCES})
 
 #define public in order we cane use library in test folder
 target_link_libraries(${LIBRARY_NAME} PUBLIC pqxx sqlite3 Threads::Threads)

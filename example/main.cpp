@@ -1,6 +1,7 @@
 #include <iostream>
 
 #include "factory.h"
+#include "querybuilder/query_builder.h"
 
 int main() {
     ConnectionConfig cfg;
@@ -17,16 +18,28 @@ int main() {
 
     // PostgreSQL pg(cfg);  // TODO: use this way for create connection
     std::cout << "result of open postgres :" << pg->open() << std::endl;
+    QueryBuilder q;
+    std::string sql = q.table("users u")
+                          .select("u.id")
+                          .select("u.name")
+                          .select("u.email")
+                          .orderBy("u.id DESC")
+                          .limit(10)
+                          .offset(0)
+                          .str();
+
+    std::cout << "query of querybuilder :" << sql << "\n";
+    pg->select(sql).print();
+
     // refacot paramter table, parameter query, parameter value
     // create test table
     // pg.insert("insert INTO users(username,password, city, email) values ($1, $2, $3, $4)",
     // std::vector<std::string>{"javad", "javadi","sadsad", "sdfdsfdsf"});
 
     // pg->select(std::string("select * from users;"));
-    // bool result = pg->update("UPDATE users SET name = $1 WHERE age = $2", {"Abolfazl Jr.", "19"});
-    // std::cout << "result of update :" << result << std::endl;
-    // result = pg->remove("DELETE FROM users WHERE age = $1", {"2"});
-    // std::cout << "result of delete :" << result << std::endl;
+    // bool result = pg->update("UPDATE users SET name = $1 WHERE age = $2", {"Abolfazl Jr.",
+    // "19"}); std::cout << "result of update :" << result << std::endl; result = pg->remove("DELETE
+    // FROM users WHERE age = $1", {"2"}); std::cout << "result of delete :" << result << std::endl;
 
     cfg.path = "mydb.db";
     std::unique_ptr<IDatabase> sq = DatabaseFactory::createDatabase(DatabaseType::sqlite, cfg);
