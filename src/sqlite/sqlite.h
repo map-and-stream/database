@@ -1,16 +1,16 @@
 #pragma once
 
-#include <driver/sqlite/sqlite3.h>
-
 #include <memory>
 #include <string>
 #include <vector>
 
 #include "database.h"
+#include "driver/sqlite3.h"
+
 
 class SQLite : public IDatabase {
   public:
-    explicit SQLite(ConnectionConfig cfg, ILogger *logger);
+    explicit SQLite(ConnectionConfig cfg, ILogger* logger);
     ~SQLite() override;
 
     bool open() override;
@@ -31,6 +31,5 @@ class SQLite : public IDatabase {
 
   private:
     sqlite3* db_ = nullptr;
-    bool executeQuery(const QueryBuilder& qb,
-                      bool returnsData, QueryResult* result = nullptr);
+    bool executeQuery(const QueryBuilder& qb, bool returnsData, QueryResult* result = nullptr);
 };

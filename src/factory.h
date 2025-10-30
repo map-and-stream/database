@@ -2,9 +2,8 @@
 
 #include "config.h"
 #include "log/src/logger.h"
-#include "postgresql.h"
-#include "sqlite.h"
-
+#include "postgres/postgresql.h"
+#include "sqlite/sqlite.h"
 
 class DatabaseFactory {
   public:

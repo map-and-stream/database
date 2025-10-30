@@ -1,22 +1,22 @@
 set(LIBRARY_NAME database)
 
 set(DATABASE_SOURCES
-postgresql.cpp
-sqlite.cpp
+postgres/postgresql.cpp
+sqlite/sqlite.cpp
 )
 
 set(DATABASE_HEADERS
-postgresql.h
+postgres/postgresql.h
 factory.h
 config.h
 database.h
-sqlite.h
+sqlite/sqlite.h
 query_result.h
 querybuilder/query_builder.h
 )
 
-add_subdirectory(driver/postgres/libpqxx)
-add_subdirectory(driver/sqlite)
+add_subdirectory(postgres/libpqxx)
+add_subdirectory(sqlite/driver)
 add_subdirectory(log)
 
 # Ensure pthread is linked
