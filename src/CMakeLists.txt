@@ -16,7 +16,7 @@ querybuilder/query_builder.h
 )
 
 add_subdirectory(driver/postgres/libpqxx)
-add_subdirectory(sqlite)
+add_subdirectory(driver/sqlite)
 add_subdirectory(log)
 
 # Ensure pthread is linked
