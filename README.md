@@ -8,4 +8,6 @@ sudo apt-get install libpq-dev
 active plugin c/c++ in cursor ide
 cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -B build
 
+git submodule update --remote --checkout src/log
+
 
