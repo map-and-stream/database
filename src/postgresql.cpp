@@ -4,15 +4,19 @@
 #include <pqxx/pqxx>
 #include <stdexcept>
 
+#include "spdlog/fmt/bundled/format.h"
+
 bool PostgreSQL::open() {
+    logger_->info("Try connect to DB ...");
     if (connection_) {
+        logger_->info("DB Already open");
         return true;  // Already open
     }
     try {
         connection_ = std::make_unique<pqxx::connection>(config_.toPostgresConnection());
         return connection_->is_open();
     } catch (const std::exception& e) {
-        std::cerr << "⚠ Other error: " << e.what() << "\n";
+        logger_->error(fmt::format("⚠ Open Connection Other error: {}", e.what()));
         connection_.reset();
         return false;
     }
@@ -35,7 +39,7 @@ PostgreSQL::~PostgreSQL() {
 
 bool PostgreSQL::insert(const QueryBuilder& qb) {
     if (!is_open()) {
-        std::cerr << "❌ Cannot insert: database not open.\n";
+        logger_->error("❌ Cannot insert: database not open.");
         return false;
     }
 
@@ -48,7 +52,7 @@ bool PostgreSQL::insert(const QueryBuilder& qb) {
         txn.commit();
         return true;
     } catch (const std::exception& e) {
-        std::cerr << "Insert failed: " << e.what() << std::endl;
+        logger_->error(fmt::format("Insert failed: {}", e.what()));
         return false;
     }
 }
@@ -105,14 +109,14 @@ QueryResult PostgreSQL::select(const QueryBuilder& qb) {
         txn.commit();
         return convert_result(res);
     } catch (const std::exception& e) {
-        std::cerr << "SELECT failed: " << e.what() << std::endl;
+        logger_->error(fmt::format("SELECT failed: {}", e.what()));
         return convert_result(pqxx::result{});  // empty result on failure
     }
 }
 
 bool PostgreSQL::update(const QueryBuilder& qb) {
     if (!is_open()) {
-        std::cerr << "❌ Cannot update: database not open.\n";
+        logger_->error("❌ Cannot update: database not open.\n");
         return false;
     }
 
@@ -123,7 +127,7 @@ bool PostgreSQL::update(const QueryBuilder& qb) {
         std::cout << "✅ Update successful.\n";
         return true;
     } catch (const std::exception& e) {
-        std::cerr << "❌ Update failed: " << e.what() << "\n";
+        logger_->error(fmt::format("❌ Update failed: {}", e.what()));
         return false;
     }
 }
@@ -140,10 +144,10 @@ bool PostgreSQL::remove(const QueryBuilder& qb) {
         txn.exec(qb.str());
 
         txn.commit();
-        std::cout << "🗑️  Delete successful.\n";
+        logger_->info("🗑️  Delete successful.\n");
         return true;
     } catch (const std::exception& e) {
-        std::cerr << "❌ Delete failed: " << e.what() << "\n";
+        logger_->error(fmt::format("❌ Delete failed: {}", e.what()));
         return false;
     }
 }

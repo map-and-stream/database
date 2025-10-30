@@ -5,7 +5,6 @@
 #include "log/src/logger.h"
 #include "querybuilder/query_builder.h"
 
-
 int main() {
     ConnectionConfig cfg;
     cfg.host = "172.21.144.1";
@@ -19,9 +18,9 @@ int main() {
     lcfg.filePath = ".";
     lcfg.maxLogRotate = 100;
     lcfg.logLevel = LogLevel::info;
-    ILogger* logger = LoggerFactory::createLogger(LoggerType::Console, lcfg);
+    ILogger* logger = LoggerFactory::createLogger(LoggerType::Spdlog, lcfg);
 
-    std::cout << "try to open connection..." << std::endl;
+    logger->info("try to open connection...");
     // PostgreSQL pg("postgresql://postgres:qazwsx@172.21.144.1:5432/mydb?connect_timeout=2");
     std::unique_ptr<IDatabase> pg =
         DatabaseFactory::createDatabase(DatabaseType::PostgreSQL, cfg, logger);
