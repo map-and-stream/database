@@ -4,13 +4,14 @@
 #include <memory>
 #include <pqxx/pqxx>
 #include <string>
+#include <utility>
 #include <vector>
 
 #include "database.h"
 
 class PostgreSQL : public IDatabase {
   public:
-    PostgreSQL(ConnectionConfig cfg) : IDatabase(std::move(cfg)) {}
+    PostgreSQL(ConnectionConfig cfg, ILogger *logger) : IDatabase(std::move(cfg), std::move(logger))  {}
 
     bool open() override;
     void close() override;

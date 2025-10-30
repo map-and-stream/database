@@ -1,7 +1,10 @@
 #include <iostream>
 
 #include "factory.h"
+#include "log/src/factory.h"
+#include "log/src/logger.h"
 #include "querybuilder/query_builder.h"
+
 
 int main() {
     ConnectionConfig cfg;
@@ -12,9 +15,16 @@ int main() {
     cfg.password = "qazwsx";
     cfg.connect_timeout = 5;
 
+    LogConfig lcfg;
+    lcfg.filePath = ".";
+    lcfg.maxLogRotate = 100;
+    lcfg.logLevel = LogLevel::info;
+    ILogger* logger = LoggerFactory::createLogger(LoggerType::Console, lcfg);
+
     std::cout << "try to open connection..." << std::endl;
     // PostgreSQL pg("postgresql://postgres:qazwsx@172.21.144.1:5432/mydb?connect_timeout=2");
-    std::unique_ptr<IDatabase> pg = DatabaseFactory::createDatabase(DatabaseType::PostgreSQL, cfg);
+    std::unique_ptr<IDatabase> pg =
+        DatabaseFactory::createDatabase(DatabaseType::PostgreSQL, cfg, logger);
 
     // PostgreSQL pg(cfg);  // TODO: use this way for create connection
     std::cout << "result of open postgres :" << pg->open() << std::endl;
@@ -42,7 +52,8 @@ int main() {
     // FROM users WHERE age = $1", {"2"}); std::cout << "result of delete :" << result << std::endl;
 
     cfg.path = "mydb.db";
-    std::unique_ptr<IDatabase> sq = DatabaseFactory::createDatabase(DatabaseType::sqlite, cfg);
+    std::unique_ptr<IDatabase> sq =
+        DatabaseFactory::createDatabase(DatabaseType::sqlite, cfg, logger);
     std::cout << "result of open sqlite :" << sq->open() << std::endl;
 
     return 0;

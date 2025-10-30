@@ -4,6 +4,9 @@ project(database)
 set(CMAKE_CXX_STANDARD 17)
 set(LIB_ALIAS isiran::database)
 
+option(LOG_BUILD_TESTS "Build log library tests" OFF)
+option(LOG_BUILD_EXAMPLE "Build log example tests" OFF)
+
 # Build the example
 add_subdirectory(src)
 add_subdirectory(example)

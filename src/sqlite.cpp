@@ -2,8 +2,10 @@
 
 #include <iostream>
 #include <stdexcept>
+#include <utility>
 
-SQLite::SQLite(ConnectionConfig cfg) : IDatabase(std::move(cfg)) {}
+SQLite::SQLite(ConnectionConfig cfg, ILogger* logger)
+    : IDatabase(std::move(cfg), std::move(logger)) {}
 
 SQLite::~SQLite() {
     close();

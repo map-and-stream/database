@@ -1,10 +1,10 @@
 cmake_minimum_required(VERSION 3.10)
-project(log_example)
+project(db_example)
 
 
-add_executable(example 
+add_executable(${PROJECT_NAME} 
     main.cpp
     )
-target_link_libraries(example PRIVATE ${LIB_ALIAS} )
+target_link_libraries(${PROJECT_NAME} PRIVATE ${LIB_ALIAS} )
 
 

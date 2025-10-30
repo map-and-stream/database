@@ -4,3 +4,7 @@
 [submodule "src/driver/postgres/libpqxx"]
 	path = src/driver/postgres/libpqxx
 	url = https://github.com/jtv/libpqxx.git
+[submodule "src/log"]
+	path = src/log
+	url = https://github.com/map-and-stream/log.git
+	branch = main

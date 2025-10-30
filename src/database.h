@@ -8,13 +8,14 @@
 #include "config.h"
 #include "query_result.h"
 #include "querybuilder/query_builder.h"
+#include "log/src/logger.h"
 
 enum class DatabaseType { PostgreSQL, sqlite };
 
 class IDatabase {
   public:
     virtual ~IDatabase() = default;
-    IDatabase(ConnectionConfig cfg) : config_(cfg) {}
+    IDatabase(ConnectionConfig cfg, ILogger *logger) : config_(cfg), logger_(logger) {}
 
     virtual bool open() = 0;
     virtual void close() = 0;
@@ -27,4 +28,5 @@ class IDatabase {
 
   protected:
     ConnectionConfig config_;
+    ILogger *logger_;
 };

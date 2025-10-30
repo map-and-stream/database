@@ -10,7 +10,7 @@
 
 class SQLite : public IDatabase {
   public:
-    explicit SQLite(ConnectionConfig cfg);
+    explicit SQLite(ConnectionConfig cfg, ILogger *logger);
     ~SQLite() override;
 
     bool open() override;
