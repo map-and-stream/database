@@ -6,7 +6,7 @@ OUTPUT_DIR = $(BUILD_DIR)/output
 
 build:
 	@echo "Starting build process... $(shell nproc) cores"
-	cmake -B $(BUILD_DIR)
+	cmake -B $(BUILD_DIR) -DDATABASE_BUILD_TESTS=ON -DDATABASE_BUILD_EXAMPLE=ON
 	cmake --build $(BUILD_DIR) -j$(shell nproc)
 	cp $(BUILD_DIR)/example/db_example $(OUTPUT_DIR)
 	cp $(BUILD_DIR)/src/libdatabase.a $(OUTPUT_DIR)
