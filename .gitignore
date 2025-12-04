@@ -1,5 +1,6 @@
 # Ignore build directory
 build/
+build_clang/
 output/
 exmaple/build
 test/build
