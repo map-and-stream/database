@@ -8,4 +8,3 @@ test/build
 CMakeLists.txt.user
 .cache
 
-mydb.db
