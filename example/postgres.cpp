@@ -22,7 +22,8 @@ int main() {
     cfg.dbname = "mydb";
     cfg.user = "postgres";
     cfg.password = "qazwsx";
-    cfg.connect_timeout = 5;
+    // cfg.connect_timeout = 100;
+    cfg.pool_size = 10;
 
     LogConfig lcfg;
     lcfg.filePath = ".";
