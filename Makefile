@@ -9,7 +9,7 @@ CLANG_OUTPUT_DIR = $(CLANG_BUILD_DIR)/output
 
 build:
 	@echo "Starting build process... $(shell nproc) cores"
-	cmake -B $(BUILD_DIR) -DDATABASE_ARMORY_BUILD_TESTS=ON -DDATABASE_ARMORY_BUILD_EXAMPLE=ON
+	cmake -B $(BUILD_DIR) -DDATABASE_ARMORY_BUILD_TESTS=ON -DDATABASE_ARMORY_BUILD_EXAMPLE=ON -DCMAKE_BUILD_TYPE=Debug
 	cmake --build $(BUILD_DIR) -j$(shell nproc)
 	mkdir -p $(OUTPUT_DIR)
 	# copy all example executables (if any). ignore error if none found.

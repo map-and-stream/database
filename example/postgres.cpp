@@ -130,5 +130,6 @@ int main() {
 
     std::cout << "MULTI JOIN query: " << sql_multi << "\n";
     pg->select(q_multi).print();
+    pg->close();
     return 0;
 }

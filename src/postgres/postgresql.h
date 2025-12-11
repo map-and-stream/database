@@ -37,8 +37,4 @@ class PostgreSQL : public IDatabase {
   private:
     // std::unique_ptr<pqxx::connection> connection_;
     std::unique_ptr<PGPool> m_pgPool;
-
-    
-
-    // void worker(PGPool &pool , int id);
 };

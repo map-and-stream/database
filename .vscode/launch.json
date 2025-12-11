@@ -1,7 +1,7 @@
 {
-    // Use IntelliSense to learn about possible attributes.
-    // Hover to view descriptions of existing attributes.
-    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    // Rdebug is typically for Ruby, but you probably mean running gdb with a C++ project on Ubuntu.
+    // For native C++ debugging in VSCode on Ubuntu, this config is good.
+    // Minor improvements made below for clarity and Ubuntu defaults.
     "version": "0.2.0",
     "configurations": [
         {
@@ -14,7 +14,8 @@
             "cwd": "${workspaceFolder}/build/example",
             "environment": [],
             "externalConsole": false,
-            "MIMode": "gdb",
+            "MIMode": "gdb", // gdb is the default debugger on Ubuntu for C/C++
+            "miDebuggerPath": "/usr/bin/gdb", // explicitly set for Ubuntu, optional but clear
             "setupCommands": [
                 {
                     "description": "Enable pretty-printing for gdb",
@@ -22,25 +23,11 @@
                     "ignoreFailures": true
                 }
             ]
-        },
-        {
-            "name": "Debug sqlite Example",
-            "type": "cppdbg",
-            "request": "launch",
-            "program": "${workspaceFolder}/build/example/sqlite_armory_example",
-            "args": [],
-            "stopAtEntry": true,
-            "cwd": "${workspaceFolder}/build/example",
-            "environment": [],
-            "externalConsole": false,
-            "MIMode": "gdb",
-            "setupCommands": [
-                {
-                    "description": "Enable pretty-printing for gdb",
-                    "text": "-enable-pretty-printing",
-                    "ignoreFailures": true
-                }
-            ]
+            // Optional: Uncomment if you want specific source file mappings or symbol loading:
+            // "symbolLoadInfo": {
+            //     "loadAll": true,
+            //     "exceptionList": []
+            // }
         }
     ]
 }

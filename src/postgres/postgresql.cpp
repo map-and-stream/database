@@ -17,9 +17,10 @@ bool PostgreSQL::open() {
     if (config_.pool_size > 1) {
         // PGPool *pool;
         // pool = new PGPool(config_.toPostgresConnection(), config_.pool_size);
-        
+
         m_pgPool = std::make_unique<PGPool>(config_.toPostgresConnection(), config_.pool_size);
     }
+    return true;
 
     // if (connection_) {
     //     logger_->info("DB Already open");
@@ -43,15 +44,14 @@ void PostgreSQL::close() {
     //     connection_.reset();
     // }
 
-    m_pgPool->~PGPool();
+    // m_pgPool->~PGPool();
 }
 
 // bool PostgreSQL::is_open() const {
 //     return connection_ && connection_->is_open();
 // }
 
-bool PostgreSQL::is_open() const
-{
+bool PostgreSQL::is_open() const {
     return m_pgPool->is_open();
 }
 
@@ -78,8 +78,7 @@ bool PostgreSQL::insert(const QueryBuilder& qb) {
     //     return false;
     // }
 
-    try 
-    {
+    try {
         auto conn = m_pgPool->connection();
         pqxx::work txn(*conn);
         pqxx::result res = txn.exec(qb.str());
@@ -87,9 +86,7 @@ bool PostgreSQL::insert(const QueryBuilder& qb) {
         txn.commit();
         m_pgPool->freeConnection(conn);
         return true;
-    } 
-    catch (const std::exception& e) 
-    {
+    } catch (const std::exception& e) {
         logger_->error(fmt::format("Insert failed: {}", e.what()));
         return false;
     }
@@ -151,8 +148,7 @@ QueryResult PostgreSQL::select(const QueryBuilder& qb) {
     //     return convert_result(pqxx::result{});  // empty result on failure
     // }
 
-    try
-    {
+    try {
         auto conn = m_pgPool->connection();
         pqxx::work txn(*conn);
         pqxx::result res;
@@ -160,14 +156,10 @@ QueryResult PostgreSQL::select(const QueryBuilder& qb) {
         txn.commit();
         m_pgPool->freeConnection(conn);
         return convert_result(res);
-    }
-    catch (const std::exception& e) 
-    {
+    } catch (const std::exception& e) {
         logger_->error(fmt::format("SELECT failed: {}", e.what()));
         return convert_result(pqxx::result{});  // empty result on failure
     }
-
-
 }
 
 bool PostgreSQL::update(const QueryBuilder& qb) {
@@ -187,16 +179,14 @@ bool PostgreSQL::update(const QueryBuilder& qb) {
     //     return false;
     // }
 
-    try
-    {
+    try {
         auto conn = m_pgPool->connection();
         pqxx::work txn(*conn);
         txn.exec(qb.str());
         txn.commit();
         std::cout << "✅ Update successful.\n";
         return true;
-    } catch (const std::exception& e) 
-    {
+    } catch (const std::exception& e) {
         logger_->error(fmt::format("❌ Update failed: {}", e.what()));
         return false;
     }
@@ -221,9 +211,7 @@ bool PostgreSQL::remove(const QueryBuilder& qb) {
     //     return false;
     // }
 
-
-    try
-    {
+    try {
         auto conn = m_pgPool->connection();
         pqxx::work txn(*conn);
         txn.exec(qb.str());
@@ -231,13 +219,10 @@ bool PostgreSQL::remove(const QueryBuilder& qb) {
         logger_->info("🗑️  Delete successful.\n");
         m_pgPool->freeConnection(conn);
         return false;
-    }
-    catch (const std::exception& e) 
-    {
+    } catch (const std::exception& e) {
         logger_->error(fmt::format("❌ Delete failed: {}", e.what()));
         return false;
     }
-
 }
 
 // void PostgreSQL::worker(PGPool& pool, int id) {
