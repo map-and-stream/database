@@ -6,8 +6,10 @@
 #include <string>
 #include <utility>
 #include <vector>
-
 #include "database.h"
+#include "pgpool.h"
+
+
 
 class PostgreSQL : public IDatabase {
   public:
@@ -33,5 +35,10 @@ class PostgreSQL : public IDatabase {
     ~PostgreSQL();
 
   private:
-    std::unique_ptr<pqxx::connection> connection_;
+    // std::unique_ptr<pqxx::connection> connection_;
+    std::unique_ptr<PGPool> m_pgPool;
+
+    
+
+    // void worker(PGPool &pool , int id);
 };

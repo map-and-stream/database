@@ -10,6 +10,7 @@ struct ConnectionConfig {
     std::string user;
     std::string password;
     int connect_timeout = 10;  // seconds
+    int pool_size = 1;  // 0 for no pooling
     std::string path = "mydb.db";
     // SqliteConfig sqlite;
 

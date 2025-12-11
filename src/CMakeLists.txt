@@ -10,7 +10,7 @@ file(GLOB CONFIGURE_DEPENDS QUERYBUILDER_HEADERS
      "${CMAKE_CURRENT_SOURCE_DIR}/sqlite/*.h"
      "${CMAKE_CURRENT_SOURCE_DIR}/sqlite/*.hpp")
 
-set(DATABASE_SOURCES postgres/postgresql.cpp sqlite/sqlite.cpp)
+set(DATABASE_SOURCES postgres/postgresql.cpp postgres/pgpool.cpp  sqlite/sqlite.cpp)
 set(DATABASE_HEADERS
     postgres/postgresql.h
     factory.h
