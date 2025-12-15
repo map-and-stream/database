@@ -47,7 +47,7 @@ bool PostgreSQL::insert(const QueryBuilder& qb) {
         pqxx::work txn(*connection_.get());
 
         // Execute the query with parameters
-        pqxx::result res = txn.exec_params(qb.str());
+        pqxx::result res = txn.exec(qb.str());
 
         txn.commit();
         return true;

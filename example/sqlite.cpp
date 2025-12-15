@@ -11,8 +11,8 @@ int main() {
     // LOGGER CONFIG
     // -----------------------------
     LogConfig lcfg;
-    lcfg.filePath = ".";
-    lcfg.maxLogRotate = 100;
+    lcfg.fileName = ".";
+    lcfg.maxFiles = 100;
     lcfg.logLevel = LogLevel::info;
 
     ILogger* logger = LoggerFactory::createLogger(LoggerType::Spdlog, lcfg);
