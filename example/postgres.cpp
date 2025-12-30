@@ -1,11 +1,10 @@
 #include <iostream>
-
 #include "factory.h"
 #include "log_armory/src/factory.h"
 #include "log_armory/src/logger.h"
 #include "querybuilder/query_builder.h"
 
-int main() {
+int main() {    
     /*
      * Schema for table 'users':
      * id     : integer, primary key, auto-increment
@@ -17,13 +16,13 @@ int main() {
      */
 
     ConnectionConfig cfg;
-    cfg.host = "192.168.10.127";
-    cfg.port = 5432;
-    cfg.dbname = "mydb";
+    cfg.host = "127.0.0.1";
+    cfg.port = 9999;
+    cfg.dbname = "postgres";
     cfg.user = "postgres";
     cfg.password = "qazwsx";
     // cfg.connect_timeout = 100;
-    cfg.pool_size = 10;
+    // cfg.pool_size = 10;
 
     LogConfig lcfg;
     lcfg.filePath = ".";

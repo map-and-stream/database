@@ -1,0 +1,252 @@
+
+Install and configure pgpool-II and PostgreSQL on Ubuntu — which ran into a problem.
+
+
+
+sudo apt update
+
+sudo apt upgrade
+
+sudo apt install postgresql postgresql-contrib
+=================================================================
+login to postgres 
+sudo -u postgres psql
+\l
+\q
+=================================================================
+
+sudo nano /etc/postgresql/16/main/postgresql.conf
+
+listen_addresses = '*'
+
+password_encryption = md5
+
+wal_level = replica
+
+max_wal_senders = 10
+
+wal_keep_size = 64MB
+
+hot_standby = on
+
+===============================================================
+
+sudo -u postgres psql
+
+show password_encryption;
+
+ALTER SYSTEM SET password_encryption = 'md5';
+\q
+
+==============================================================
+
+sudo systemctl restart postgresql
+
+============================================================== 
+
+sudo -u postgres psql
+
+show password_encryption;
+
+CREATE USER replicator WITH REPLICATION ENCRYPTED PASSWORD 'admin@123';
+
+ALTER USER postgres WITH PASSWORD 'admin@123';
+
+\q
+
+=============================================================
+
+sudo nano /etc/postgresql/16/main/pg_hba.conf
+
+host    replication     replicator      127.0.0.1/24        md5
+
+=============================================================
+
+sudo systemctl restart postgresql
+
+sudo systemctl status postgresql
+
+=============================================================
+
+sudo -u postgres psql
+
+SELECT * FROM pg_replication_slots;
+
+SELECT * FROM pg_stat_replication;
+
+===========================================================
+
+create database chirags;
+
+===========================================================
+
+sudo apt install pgpool2 -y
+
+sudo nano /etc/pgpool2/pgpool.conf
+
+listen_addresses = '*'
+
+port = 9999
+
+backend_hostname0 = '127.0.0.1'
+
+backend_port0 = 5432
+
+backend_weight0 = 1
+
+backend_data_directory0 = '/var/lib/postgresql/16/main'
+
+backend_flag0 = 'ALLOW_TO_FAILOVER'
+
+backend_application_name0 = 'server0'
+
+enable_pool_hba = on
+
+auth_type = md5
+
+pool_passwd = '/etc/pgpool2/pool_passwd'
+
+log_destination = 'stderr'
+
+logging_collector = on
+
+log_directory = '/var/log/pgpool'
+
+log_filename = 'pgpool.log'
+
+load_balance_mode = on
+
+sr_check_period = 10
+
+sr_check_user = 'postgres'
+
+sr_check_password = 'admin@123'
+
+sr_check_database = 'postgres'
+
+health_check_period = 10
+
+health_check_timeout = 20
+
+health_check_user = 'postgres'
+
+health_check_password = 'admin@123'
+
+health_check_database = 'postgres'
+
+health_check_max_retries = 3
+
+health_check_retry_delay = 5
+
+failover_command = '/etc/pgpool2/failover.sh %d %P %H %M %R'
+
+failback_command = '/etc/pgpool2/failback.sh %d %P %H %M %R'
+
+failover_on_backend_error = on 
+
+hostname0 = ''
+
+num_init_children = 32 
+
+max_pool = 4
+
+==================================================================
+
+sudo nano /etc/pgpool2/pcp.conf
+
+replicator:admin@123
+
+==================================================================
+
+sudo nano /etc/pgpool2/pool_hba.conf
+
+host    all     postgres        127.0.0.1/32        md5
+
+=================================================================
+
+create failover.sh and failback.sh file:
+
+sudo vi /etc/pgpool2/failover.sh
+
+#!/bin/bash
+FAILED_NODE_ID=$1
+NEW_PRIMARY_HOST=$3
+
+# if the master fails (node 0), promote the standby to primary
+if [ $FAILED_NODE_ID -eq 0]; then
+        echo "Failover detected. Promoting standby (node 1) to primary..."
+        psql -h $NEW_PRIMARY_HOST -U postgres -c "SELECT pg_promote();"
+fi
+
+exit 0
+
+            ==========================
+sudo vi /etc/pgpool2/failback.sh
+
+#!/bin/bash
+FAILED_NODE_ID=$1
+echo "Reattaching node $FAILED_NODE_ID to pgpool-II after recovery."
+exit 0
+
+===========================================================
+
+sudo pg_md5 -m -u postgres 'admin@123'
+
+sudo cat /etc/pgpool2/pool_passwd
+
+===========================================================
+
+sudo chown +x postgres:postgres /etc/pgpool2/failover.sh
+sudo chown +x postgres:postgres /etc/pgpool2/failback.sh
+
+sudo chmod +x /etc/pgpool2/failover.sh
+sudo chmod +x /etc/pgpool2/failback.sh
+
+=================================================================
+
+sudo mkdir -p /var/log/pgpool
+sudo chown postgres:postgres /var/log/pgpool
+
+sudo apt -y install postgresql-16-pgpool2
+
+sudo systemctl start pgpool2
+sudo systemctl enable pgpool2
+sudo systemctl status pgpool2
+
+=================================================================
+
+sudo systemctl restart pgpool2
+sudo tail -f /var/log/pgpool/pgpool.log
+
+=================================================================
+
+sudo tail -f /var/log/postgresql/postgresql-16-main.log
+
+psql -h 127.0.0.1 -p 9999 -U postgres
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

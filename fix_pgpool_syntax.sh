@@ -1,0 +1,46 @@
+#!/bin/bash
+# Script to fix pgpool2 configuration syntax error
+
+echo "=== pgpool2 Status Check ==="
+echo ""
+systemctl status pgpool2 --no-pager | head -15
+echo ""
+
+echo "=== Configuration Error Analysis ==="
+echo "Error: syntax error at line 128 'etc/pgpool2/pool_passwd'"
+echo "This suggests the pool_passwd path is missing quotes or leading slash"
+echo ""
+
+echo "=== Fixing Configuration ==="
+echo ""
+echo "Run these commands to fix the syntax error:"
+echo ""
+echo "1. Check the current pool_passwd line:"
+echo "   sudo sed -n '125,135p' /etc/pgpool2/pgpool.conf"
+echo ""
+echo "2. Fix the pool_passwd line (should have quotes and full path):"
+echo "   sudo sed -i \"s|^pool_passwd =.*|pool_passwd = '/etc/pgpool2/pool_passwd'|\" /etc/pgpool2/pgpool.conf"
+echo ""
+echo "   OR if it's missing the leading slash:"
+echo "   sudo sed -i \"s|^pool_passwd =.*|pool_passwd = '/etc/pgpool2/pool_passwd'|\" /etc/pgpool2/pgpool.conf"
+echo ""
+echo "3. Verify the fix:"
+echo "   sudo grep '^pool_passwd' /etc/pgpool2/pgpool.conf"
+echo "   (Should show: pool_passwd = '/etc/pgpool2/pool_passwd')"
+echo ""
+echo "4. Test configuration syntax:"
+echo "   sudo pgpool -n -f /etc/pgpool2/pgpool.conf -F /etc/pgpool2/pcp.conf -a /etc/pgpool2/pool_hba.conf -d 2>&1 | head -20"
+echo ""
+echo "5. If syntax is OK, restart pgpool2:"
+echo "   sudo systemctl restart pgpool2"
+echo ""
+echo "6. Check status:"
+echo "   sudo systemctl status pgpool2"
+echo ""
+
+echo "=== Alternative: Comment out pool_passwd ==="
+echo "If you want to disable pool_passwd temporarily:"
+echo "   sudo sed -i 's/^pool_passwd =/#pool_passwd =/' /etc/pgpool2/pgpool.conf"
+echo "   sudo systemctl restart pgpool2"
+echo ""
+

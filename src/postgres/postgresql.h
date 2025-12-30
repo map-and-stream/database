@@ -11,6 +11,8 @@
 
 
 
+
+
 class PostgreSQL : public IDatabase {
   public:
     PostgreSQL(ConnectionConfig cfg, ILogger *logger) : IDatabase(std::move(cfg), std::move(logger))  {}
@@ -35,6 +37,15 @@ class PostgreSQL : public IDatabase {
     ~PostgreSQL();
 
   private:
+<<<<<<< HEAD
     // std::unique_ptr<pqxx::connection> connection_;
     std::unique_ptr<PGPool> m_pgPool;
+=======
+    std::unique_ptr<pqxx::connection> connection_;
+    // std::unique_ptr<PGPool> m_pgPool;
+
+    
+
+    // void worker(PGPool &pool , int id);
+>>>>>>> 0d19373 (WIP: save local changes)
 };
