@@ -22,7 +22,18 @@ set(DATABASE_HEADERS
 
 add_subdirectory(postgres/libpqxx)
 add_subdirectory(sqlite/driver)
-add_subdirectory(log_armory)
+# Check if external log-armory is already available (from parent project)
+# If not, use the nested log_armory submodule
+if(TARGET isiran::log_armory)
+    message(STATUS "database-armory: Using external log-armory")
+    set(LOG_ARMORY_TARGET isiran::log_armory)
+    set(LOG_ARMORY_INCLUDE_DIR "")
+else()
+    message(STATUS "database-armory: Using nested log_armory submodule")
+    add_subdirectory(log_armory)
+    set(LOG_ARMORY_TARGET isiran::log_armory)
+    set(LOG_ARMORY_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/log_armory)
+endif()
 
 # Ensure pthread is linked
 set(THREADS_PREFER_PTHREAD_FLAG ON)
@@ -32,14 +43,17 @@ add_library(${LIBRARY_NAME} STATIC ${DATABASE_SOURCES})
 
 # define public in order we cane use library in test folder
 target_link_libraries(${LIBRARY_NAME} PUBLIC pqxx sqlite3 Threads::Threads
-                                             isiran::log_armory)
+${LOG_ARMORY_TARGET})
 
 # Keep headers associated with this target for IDEs, but do not propagate
 target_sources(${LIBRARY_NAME} PRIVATE ${DATABASE_HEADERS})
 
 target_include_directories(
-  ${LIBRARY_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}
-                         ${CMAKE_CURRENT_SOURCE_DIR}/log_armory)
+     ${LIBRARY_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+     # Only add nested log_armory include if we're using it
+if(LOG_ARMORY_INCLUDE_DIR)
+target_include_directories(${LIBRARY_NAME} PUBLIC ${LOG_ARMORY_INCLUDE_DIR})
+endif()
 
 # Convenient namespaced alias for downstream targets
 add_library(${LIB_ALIAS} ALIAS ${LIBRARY_NAME})
