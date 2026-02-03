@@ -4,7 +4,7 @@
 #include <stdexcept>
 #include <utility>
 
-SQLite::SQLite(ConnectionConfig cfg, ILogger* logger)
+SQLite::SQLite(ConnectionConfig cfg, std::unique_ptr<ILogger> logger)
     : IDatabase(std::move(cfg), std::move(logger)) {}
 
 SQLite::~SQLite() {

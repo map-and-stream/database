@@ -11,11 +11,11 @@ int main() {
     // LOGGER CONFIG
     // -----------------------------
     LogConfig lcfg;
-    lcfg.fileName = ".";
-    lcfg.maxFiles = 100;
-    lcfg.logLevel = LogLevel::info;
+    lcfg.general_config.fileName = ".";
+    lcfg.rotate_config.max_count = 100;
+    lcfg.general_config.logLevel = LogLevel::info;
 
-    ILogger* logger = LoggerFactory::createLogger(LoggerType::Spdlog, lcfg);
+    auto logger = LoggerFactory::createLogger(LoggerType::Spdlog, lcfg);
 
     // -----------------------------
     // SQLITE CONFIG
@@ -25,7 +25,7 @@ int main() {
 
     logger->info("Opening SQLite connection...");
     std::unique_ptr<IDatabase> sq =
-        DatabaseFactory::createDatabase(DatabaseType::sqlite, sqlite_cfg, logger);
+        DatabaseFactory::createDatabase(DatabaseType::sqlite, sqlite_cfg, std::move(logger));
 
     std::cout << "SQLite open result: " << sq->open() << std::endl;
 

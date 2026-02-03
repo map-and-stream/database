@@ -11,7 +11,7 @@
 
 class PostgreSQL : public IDatabase {
   public:
-    PostgreSQL(ConnectionConfig cfg, ILogger *logger) : IDatabase(std::move(cfg), std::move(logger))  {}
+    PostgreSQL(ConnectionConfig cfg, std::unique_ptr<ILogger> logger) : IDatabase(std::move(cfg), std::move(logger))  {}
 
     bool open() override;
     void close() override;

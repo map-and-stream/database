@@ -25,27 +25,28 @@ int main() {
     cfg.connect_timeout = 5;
 
     LogConfig lcfg;
-    lcfg.fileName = ".";
-    lcfg.maxFiles = 100;
-    lcfg.logLevel = LogLevel::info;
-    ILogger* logger = LoggerFactory::createLogger(LoggerType::Spdlog, lcfg);
+    lcfg.general_config.fileName = ".";
+    lcfg.rotate_config.max_count = 100;
+    lcfg.general_config.logLevel = LogLevel::info;
+    auto logger = LoggerFactory::createLogger(LoggerType::Spdlog, lcfg);
+    ILogger* log = logger.get();
 
     std::unique_ptr<IDatabase> pg;
     {
-        logger->info("try to open connection...");
-        pg = DatabaseFactory::createDatabase(DatabaseType::PostgreSQL, cfg, logger);
+        log->info("try to open connection...");
+        pg = DatabaseFactory::createDatabase(DatabaseType::PostgreSQL, cfg, std::move(logger));
 
         if (!pg) {
-            logger->error("failed to create postgres database object");
+            log->error("failed to create postgres database object");
             return 1;
         }
 
         if (!pg->open()) {
-            logger->error("postgres connection failed");
+            log->error("postgres connection failed");
             return 1;
         }
 
-        logger->info("postgres connection is open");
+        log->info("postgres connection is open");
     }
 
     {
@@ -60,7 +61,7 @@ int main() {
                               .limit(10)
                               .offset(0)
                               .str();
-        logger->info("query of querybuilder :" + sql);
+        log->info("query of querybuilder :" + sql);
     }
 
     {

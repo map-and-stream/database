@@ -8,11 +8,11 @@
 class DatabaseFactory {
   public:
     static std::unique_ptr<IDatabase> createDatabase(DatabaseType type, ConnectionConfig cfg,
-                                                     ILogger* logger) {
+                                                     std::unique_ptr<ILogger> logger) {
         if (type == DatabaseType::PostgreSQL) {
-            return std::make_unique<PostgreSQL>(cfg, logger);
+            return std::make_unique<PostgreSQL>(cfg, std::move(logger));
         } else if (type == DatabaseType::sqlite) {
-            return std::make_unique<SQLite>(cfg, logger);
+            return std::make_unique<SQLite>(cfg, std::move(logger));
         } else {
             throw std::invalid_argument("Invalid logger type");
         }
