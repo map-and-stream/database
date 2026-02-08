@@ -35602,7 +35602,14 @@ SQLITE_PRIVATE int sqlite3IsOverflow(double x){
 */
 SQLITE_PRIVATE int sqlite3Strlen30(const char *z){
   if( z==0 ) return 0;
+#if defined(__GNUC__) && __GNUC__>=11
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wstringop-overread"
+#endif
   return 0x3fffffff & (int)strlen(z);
+#if defined(__GNUC__) && __GNUC__>=11
+#pragma GCC diagnostic pop
+#endif
 }
 
 /*
