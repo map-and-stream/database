@@ -3,9 +3,8 @@
 #include <memory>
 #include <string>
 #include <vector>
-#include "../database.h"
-
 #include "database.h"
+
 #include "driver/sqlite3.h"
 #include "spdlog/fmt/bundled/format.h"
 
