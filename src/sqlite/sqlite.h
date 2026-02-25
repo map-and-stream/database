@@ -6,7 +6,7 @@
 #include "database.h"
 
 #include "driver/sqlite3.h"
-#include "spdlog/fmt/bundled/format.h"
+// #include "spdlog/fmt/bundled/format.h"
 
 
 class SQLite : public IDatabase {

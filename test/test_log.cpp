@@ -2,8 +2,7 @@
 #include "factory.h"
 #include <sstream>
 #include <iostream>
-#include "log_armory/src/factory.h"
-#include "log_armory/src/console_logger.h"
+// #include "log_armory/src/factory.h"
 
 TEST(SampleTest, BasicAssertion) {
     EXPECT_EQ(1 + 1, 2);

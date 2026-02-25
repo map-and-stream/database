@@ -4,7 +4,7 @@
 #include <pqxx/pqxx>
 #include <stdexcept>
 
-#include "spdlog/fmt/bundled/format.h"
+// #include "spdlog/fmt/bundled/format.h"
 
 bool PostgreSQL::open() {
     // logger_->info("Try connect to DB ...");
