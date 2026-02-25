@@ -4,6 +4,19 @@
 #include <stdexcept>
 #include <utility>
 
+
+// Query q;
+// std::string sql = q.table("users u")
+//                       .select("u.id")
+//                       .select("u.name")
+//                       .select("o.total")
+//                       .join("orders o", "u.id", "o.user_id")
+//                       .where("u.active = true")
+//                       .orderBy("o.total DESC")
+//                       .limit(10)
+//                       .offset(20)
+//                       .str();
+
 SQLite::SQLite(ConnectionConfig cfg, std::unique_ptr<ILogger> logger)
     : IDatabase(std::move(cfg), std::move(logger)) {}
 
@@ -12,6 +25,8 @@ SQLite::~SQLite() {
 }
 
 bool SQLite::open() {
+
+
     if (is_open()){
         logger_->info("SQLite database already opened.");
         return true;

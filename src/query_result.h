@@ -3,6 +3,8 @@
 #include <iomanip>
 #include <string>
 #include <vector>
+#include <optional>
+#include <iostream>
 
 class QueryResult {
   public:

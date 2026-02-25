@@ -4,6 +4,7 @@
 #include "database.h"
 #include "log_armory/src/logger.h"
 #include "sqlite/sqlite.h"
+#include <memory>
 #ifdef USE_POSTGRESQL
 #include "postgres/postgresql.h"
 #endif

@@ -1,21 +1,19 @@
 #pragma once
 
 #include <memory>
-#include <optional>
-#include <string>
-#include <vector>
 
 #include "config.h"
+#include "log_armory/src/logger.h"
 #include "query_result.h"
 #include "querybuilder/query_builder.h"
-#include "log_armory/src/logger.h"
 
 enum class DatabaseType { PostgreSQL, sqlite };
 
 class IDatabase {
   public:
     virtual ~IDatabase() = default;
-    IDatabase(ConnectionConfig cfg, std::unique_ptr<ILogger> logger) : config_(std::move(cfg)), logger_(std::move(logger)) {}
+    IDatabase(ConnectionConfig cfg, std::unique_ptr<ILogger> logger)
+        : config_(std::move(cfg)), logger_(std::move(logger)) {}
 
     virtual bool open() = 0;
     virtual void close() = 0;

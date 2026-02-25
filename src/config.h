@@ -10,7 +10,7 @@ struct ConnectionConfig {
     std::string user;
     std::string password;
     int connect_timeout = 10;  // seconds
-    std::string path = "mydb.db";
+    std::string path = "";
     // SqliteConfig sqlite;
 
     std::string toPostgresConnection() const {
@@ -18,12 +18,11 @@ struct ConnectionConfig {
         // return "postgresql://" + user + ":" + password + "@" + host + ":" + std::to_string(port)
         // +
         //        "/" + dbname + "?" + "connect_timeout=" + std::to_string(connect_timeout);
-        return "host=" + host + " port=" + std::to_string(port) + " dbname=" + dbname +
-               " user=" + user + " password=" + password +
-               " connect_timeout=" + std::to_string(connect_timeout);
+        return "host=" + host + " port=" + std::to_string(port) + " dbname=" + dbname + " user=" + user +
+               " password=" + password + " connect_timeout=" + std::to_string(connect_timeout);
     }
 };
 
 struct SqliteConfig {
-    std::string path = "mydb.db";
+    std::string path = "";
 };
