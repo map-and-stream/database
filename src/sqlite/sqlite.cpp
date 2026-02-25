@@ -17,8 +17,12 @@
 //                       .offset(20)
 //                       .str();
 
-SQLite::SQLite(ConnectionConfig cfg, std::unique_ptr<ILogger> logger)
-    : IDatabase(std::move(cfg), std::move(logger)) {}
+SQLite::SQLite(ConnectionConfig cfg
+    // , std::unique_ptr<ILogger> logger
+)
+    : IDatabase(std::move(cfg)
+    // , std::move(logger)
+) {}
 
 SQLite::~SQLite() {
     close();
@@ -28,10 +32,10 @@ bool SQLite::open() {
 
 
     if (is_open()){
-        logger_->info("SQLite database already opened.");
+        // logger_->info("SQLite database already opened.");
         return true;
     }
-    logger_->info(fmt::format("Trying to open SQLite database at path: {}", config_.path));
+    // logger_->info(fmt::format("Trying to open SQLite database at path: {}", config_.path));
    
 
 
@@ -40,17 +44,17 @@ bool SQLite::open() {
     int rc = sqlite3_open(config_.path.c_str(), &db_);
     if (rc != SQLITE_OK) {
         // std::cerr << "Cannot open SQLite database: " << sqlite3_errmsg(db_) << std::endl;
-        logger_->error(fmt::format("Cannot open SQLite database: {}", sqlite3_errmsg(db_)));
+        // logger_->error(fmt::format("Cannot open SQLite database: {}", sqlite3_errmsg(db_)));
         close();
         return false;
     }
-    logger_->info("SQLite database opened successfully.");
+    // logger_->info("SQLite database opened successfully.");
     return true;
 }
 
 void SQLite::close() {
     if (db_) {
-        logger_->info("Closing SQLite database connection.");
+        // logger_->info("Closing SQLite database connection.");
         sqlite3_close(db_);
         db_ = nullptr;
     }
@@ -61,24 +65,24 @@ bool SQLite::is_open() const {
 }
 
 bool SQLite::insert(const QueryBuilder& qb) {
-    logger_->info(fmt::format("Executing INSERT: {}", qb.str()));
+    // logger_->info(fmt::format("Executing INSERT: {}", qb.str()));
     return executeQuery(qb, false);
 }
 
 QueryResult SQLite::select(const QueryBuilder& qb) {
-    logger_->info(fmt::format("Executing SELECT: {}", qb.str()));
+    // logger_->info(fmt::format("Executing SELECT: {}", qb.str()));
     QueryResult result;
     executeQuery(qb, true, &result);
     return result;
 }
 
 bool SQLite::update(const QueryBuilder& qb) {
-    logger_->info(fmt::format("Executing UPDATE: {}", qb.str()));
+    // logger_->info(fmt::format("Executing UPDATE: {}", qb.str()));
     return executeQuery(qb, false);
 }
 
 bool SQLite::remove(const QueryBuilder& qb) {
-    logger_->info(fmt::format("Executing DELETE: {}", qb.str()));
+    // logger_->info(fmt::format("Executing DELETE: {}", qb.str()));
     return executeQuery(qb, false);
 }
 
@@ -91,7 +95,7 @@ bool SQLite::executeQuery(const QueryBuilder& qb, bool returnsData, QueryResult*
     int rc = sqlite3_prepare_v2(db_, qb.str().c_str(), -1, &stmt, nullptr);
     if (rc != SQLITE_OK) {
         // std::cerr << "SQL error (prepare): " << sqlite3_errmsg(db_) << std::endl;
-        logger_->error(fmt::format("SQL error (prepare): {}", sqlite3_errmsg(db_)));
+        // logger_->error(fmt::format("SQL error (prepare): {}", sqlite3_errmsg(db_)));
         return false;
     }
 
@@ -117,7 +121,7 @@ bool SQLite::executeQuery(const QueryBuilder& qb, bool returnsData, QueryResult*
 
         if (rc != SQLITE_DONE) {
             // std::cerr << "SQL error (step): " << sqlite3_errmsg(db_) << std::endl;
-            logger_->error(fmt::format("SQL error (step): {}", sqlite3_errmsg(db_)));
+            // logger_->error(fmt::format("SQL error (step): {}", sqlite3_errmsg(db_)));
             sqlite3_finalize(stmt);
             return false;
         }
@@ -135,7 +139,7 @@ bool SQLite::executeQuery(const QueryBuilder& qb, bool returnsData, QueryResult*
 
     sqlite3_finalize(stmt);
 
-    logger_->info("SQLite query executed successfully.");
+    // logger_->info("SQLite query executed successfully.");
 
     return true;
 }

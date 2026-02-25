@@ -1,8 +1,7 @@
 #include <iostream>
 
 #include "factory.h"
-#include "log_armory/src/factory.h"
-#include "log_armory/src/logger.h"
+// #include "log_armory/src/factory.h"
 #include "querybuilder/query_builder.h"
 
 int main() {
@@ -10,12 +9,12 @@ int main() {
     // -----------------------------
     // LOGGER CONFIG
     // -----------------------------
-    LogConfig lcfg;
-    lcfg.general_config.fileName = ".";
-    lcfg.rotate_config.max_count = 100;
-    lcfg.general_config.logLevel = LogLevel::info;
+    // LogConfig lcfg;
+    // lcfg.general_config.fileName = ".";
+    // lcfg.rotate_config.max_count = 100;
+    // lcfg.general_config.logLevel = LogLevel::info;
 
-    auto logger = LoggerFactory::createLogger(LoggerType::Spdlog, lcfg);
+    // auto logger = LoggerFactory::createLogger(LoggerType::Spdlog, lcfg);
 
     // -----------------------------
     // SQLITE CONFIG
@@ -23,9 +22,11 @@ int main() {
     ConnectionConfig sqlite_cfg;
     sqlite_cfg.path = "mydb.db";
 
-    logger->info("Opening SQLite connection...");
+    // logger->info("Opening SQLite connection...");
     std::unique_ptr<IDatabase> sq =
-        DatabaseFactory::createDatabase(DatabaseType::sqlite, sqlite_cfg, std::move(logger));
+        DatabaseFactory::createDatabase(DatabaseType::sqlite, sqlite_cfg
+            // , std::move(logger)
+        );
 
     std::cout << "SQLite open result: " << sq->open() << std::endl;
 

@@ -3,7 +3,7 @@
 #include <memory>
 
 #include "config.h"
-#include "log_armory/src/logger.h"
+// #include "log_armory/src/logger.h"
 #include "query_result.h"
 #include "querybuilder/query_builder.h"
 
@@ -12,8 +12,12 @@ enum class DatabaseType { PostgreSQL, sqlite };
 class IDatabase {
   public:
     virtual ~IDatabase() = default;
-    IDatabase(ConnectionConfig cfg, std::unique_ptr<ILogger> logger)
-        : config_(std::move(cfg)), logger_(std::move(logger)) {}
+    IDatabase(ConnectionConfig cfg
+              // , std::unique_ptr<ILogger> logger
+              )
+        : config_(std::move(cfg))
+    // , logger_(std::move(logger))
+    {}
 
     virtual bool open() = 0;
     virtual void close() = 0;
@@ -26,5 +30,5 @@ class IDatabase {
 
   protected:
     ConnectionConfig config_;
-    std::unique_ptr<ILogger> logger_;
+    // std::unique_ptr<ILogger> logger_;
 };

@@ -1,8 +1,7 @@
 #include <iostream>
 
 #include "factory.h"
-#include "log_armory/src/factory.h"
-#include "log_armory/src/logger.h"
+// #include "log_armory/src/factory.h"
 #include "querybuilder/query_builder.h"
 
 int main() {
@@ -24,29 +23,31 @@ int main() {
     cfg.password = "qazwsx";
     cfg.connect_timeout = 5;
 
-    LogConfig lcfg;
-    lcfg.general_config.fileName = ".";
-    lcfg.rotate_config.max_count = 100;
-    lcfg.general_config.logLevel = LogLevel::info;
-    auto logger = LoggerFactory::createLogger(LoggerType::Spdlog, lcfg);
-    ILogger* log = logger.get();
+    // LogConfig lcfg;
+    // lcfg.general_config.fileName = ".";
+    // lcfg.rotate_config.max_count = 100;
+    // lcfg.general_config.logLevel = LogLevel::info;
+    // auto logger = LoggerFactory::createLogger(LoggerType::Spdlog, lcfg);
+    // ILogger* log = logger.get();
 
     std::unique_ptr<IDatabase> pg;
     {
-        log->info("try to open connection...");
-        pg = DatabaseFactory::createDatabase(DatabaseType::PostgreSQL, cfg, std::move(logger));
+        // log->info("try to open connection...");
+        pg = DatabaseFactory::createDatabase(DatabaseType::PostgreSQL, cfg
+            // , std::move(logger)
+        );
 
         if (!pg) {
-            log->error("failed to create postgres database object");
+            // log->error("failed to create postgres database object");
             return 1;
         }
 
         if (!pg->open()) {
-            log->error("postgres connection failed");
+            // log->error("postgres connection failed");
             return 1;
         }
 
-        log->info("postgres connection is open");
+        // log->info("postgres connection is open");
     }
 
     {
@@ -61,7 +62,7 @@ int main() {
                               .limit(10)
                               .offset(0)
                               .str();
-        log->info("query of querybuilder :" + sql);
+        // log->info("query of querybuilder :" + sql);
     }
 
     {
